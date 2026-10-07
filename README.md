@@ -204,6 +204,25 @@ Zero dependencies, ~700 lines, all in `src/`:
 
 Run the tests with `npm test` (node:test, no network).
 
+## Releasing (maintainers)
+
+Pushing a version tag runs `.github/workflows/release.yml`: it runs the
+tests, verifies the tag matches `package.json`, creates the GitHub Release
+(auto-generated notes), then publishes to npm with
+[trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC — no
+npm token, no OTP, provenance attestation included).
+
+```bash
+npm version patch     # or minor / major — bumps, commits, tags vX.Y.Z
+git push origin main --follow-tags
+```
+
+One-time setup, in addition to the workflow file:
+
+- npmjs.com → package `kimi-tools-mcp` → Settings → **Trusted publishing**
+  → add GitHub Actions: owner `ObsidianArch02`, repo `kimi-tools-mcp`,
+  workflow filename `release.yml` (no environment).
+
 ## FAQ
 
 **Does this share my quota with other people?**

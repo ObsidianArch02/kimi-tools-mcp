@@ -1,0 +1,82 @@
+# Release pipeline: push a v* tag → test → GitHub Release → npm publish.
+#
+# Publishing uses npm trusted publishing (OIDC): no long-lived npm token,
+# no OTP, and the package gets a provenance attestation linking it to this
+# repo + workflow. One-time setup required — see README "Releasing".
+#
+# Security posture:
+# - every third-party action is pinned to a full commit SHA
+# - permissions are scoped per job, minimal by default
+# - the tag is verified to match the package version before anything
+#   is released or published
+
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+# Concurrency: two tags pushed together queue instead of racing the
+# registry with interleaved publishes of different versions.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      - run: node --test test/
+
+      - name: Tag must match package.json version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$pkg" ]; then
+            echo "::error::Tag v$tag does not match package.json version $pkg."
+            echo "Bump with 'npm version <patch|minor|major>' so the tag and the package stay in lockstep."
+            exit 1
+          fi
+
+  release:
+    name: create GitHub Release
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the release on this repo
+    steps:
+      - uses: softprops/action-gh-release@e598afbe1493e6b1bafb1f389cabb956eab91231 # v3.0.3
+        with:
+          generate_release_notes: true
+
+  publish:
+    name: publish to npm
+    needs: release
+    runs-on: ubuntu-latest
+    # Trusted publishing requires id-token: write. contents:read is needed
+    # to check out the exact tagged tree being published.
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # npm CLI >= 11.5.1 is required for trusted publishing (OIDC).
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          registry-url: "https://registry.npmjs.org"
+
+      - run: npm publish --access public --provenance
