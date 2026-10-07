@@ -56,9 +56,12 @@ npx -y kimi-tools-mcp login --region global   # use auth.kimi.ai instead of auth
 ### <img src="https://usemagpie.ai/favicon.png" width="16" height="16" alt="" valign="middle"> magpie
 
 ```bash
-magpie library mcp add kimi-tools -- npx -y kimi-tools-mcp
+magpie library mcp add kimi-tools npx -y kimi-tools-mcp
 magpie library sync
 ```
+
+(Note: `magpie library mcp add` takes the command directly — no `--`
+separator, unlike `codex mcp add` / `pi mcp add`.)
 
 Then sign in once with `npx -y kimi-tools-mcp login`. Every agent you gave
 the server to (magpie's Library page or `agents=...` selects them) can call
@@ -92,9 +95,20 @@ then run `npx -y kimi-tools-mcp login` once in a terminal.
 
 ### <img src="https://www.kimi.com/favicon.ico" width="16" height="16" alt="" valign="middle"> Kimi Code CLI
 
-```bash
-kimi mcp add kimi-tools -- npx -y kimi-tools-mcp
+Add to `~/.kimi-code/mcp.json` (create the file if needed):
+
+```json
+{
+  "mcpServers": {
+    "kimi-tools": {
+      "command": "npx",
+      "args": ["-y", "kimi-tools-mcp"]
+    }
+  }
+}
 ```
+
+then run `npx -y kimi-tools-mcp login` once.
 
 ### <img src="https://opencode.ai/favicon.ico" width="16" height="16" alt="" valign="middle"> OpenCode
 

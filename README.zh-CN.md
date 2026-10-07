@@ -56,9 +56,12 @@ npx -y kimi-tools-mcp login --region global   # 改用 auth.kimi.ai（国际区�
 ### <img src="https://usemagpie.ai/favicon.png" width="16" height="16" alt="" valign="middle"> magpie
 
 ```bash
-magpie library mcp add kimi-tools -- npx -y kimi-tools-mcp
+magpie library mcp add kimi-tools npx -y kimi-tools-mcp
 magpie library sync
 ```
+
+（注意：`magpie library mcp add` 直接跟命令，**没有** `--` 分隔符——
+这与 `codex mcp add` / `pi mcp add` 不同。）
 
 然后执行一次 `npx -y kimi-tools-mcp login`。你在 Library 里把 server
 分发给哪些 agent（Library 页面或 `agents=...` 选择），哪些 agent 就能
@@ -93,9 +96,20 @@ claude mcp add kimi-tools -- npx -y kimi-tools-mcp
 
 ### <img src="https://www.kimi.com/favicon.ico" width="16" height="16" alt="" valign="middle"> Kimi Code CLI
 
-```bash
-kimi mcp add kimi-tools -- npx -y kimi-tools-mcp
+写入 `~/.kimi-code/mcp.json`（文件不存在则新建）：
+
+```json
+{
+  "mcpServers": {
+    "kimi-tools": {
+      "command": "npx",
+      "args": ["-y", "kimi-tools-mcp"]
+    }
+  }
+}
 ```
+
+然后执行一次 `npx -y kimi-tools-mcp login`。
 
 ### <img src="https://opencode.ai/favicon.ico" width="16" height="16" alt="" valign="middle"> OpenCode
 
