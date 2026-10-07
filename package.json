@@ -1,6 +1,6 @@
 {
   "name": "kimi-tools-mcp",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "MCP server bridging Kimi Code's official web search, URL fetch and 25+ professional data sources to any MCP-capable agent, using each user's own OAuth sign-in",
   "type": "module",
   "main": "./bin/kimi-tools-mcp.js",
