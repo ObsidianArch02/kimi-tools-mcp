@@ -1,0 +1,32 @@
+{
+  "name": "kimi-tools-mcp",
+  "version": "0.1.0",
+  "description": "MCP server bridging Kimi Code's official web search, URL fetch and 25+ professional data sources to any MCP-capable agent, using each user's own OAuth sign-in",
+  "type": "module",
+  "main": "./bin/kimi-tools-mcp.js",
+  "bin": {
+    "kimi-tools-mcp": "./bin/kimi-tools-mcp.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "kimi",
+    "moonshot",
+    "kimi-code",
+    "data-source",
+    "web-search"
+  ],
+  "license": "MIT"
+}
