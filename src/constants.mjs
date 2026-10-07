@@ -7,7 +7,7 @@
 // cannot do anything until a real user completes the device authorization
 // flow with their own Kimi account.
 
-export const VERSION = "0.1.0";
+export const VERSION = "0.2.0";
 
 export const CLIENT_ID = "17e5f671-d194-4dfb-9706-5516cb48c098";
 

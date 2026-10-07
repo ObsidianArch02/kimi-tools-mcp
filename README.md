@@ -167,6 +167,15 @@ where it conflicts.
 - **Hygiene.** Tokens are never printed, logged, written to project
   folders, or included in tool outputs/error text. `logout` (or deleting
   the directory) removes every trace from the machine.
+- **Optional OS keychain.** Set `KIMI_TOOLS_STORE=keychain` to move the
+  long-lived refresh token out of `credentials.json` and into the OS
+  keychain (macOS Keychain via `security`; Linux libsecret via
+  `secret-tool`). Off by default for zero-dependency portability — the
+  short-lived access token and non-secret metadata still live in the file.
+  Sign in (or re-login) once with the variable set and the token migrates;
+  unset it and sign in again to move back. If the keychain is unavailable
+  the bridge fails loudly with instructions instead of silently writing
+  the secret to disk.
 - **Your part.** Treat `credentials.json` like a password: don't copy it
   into repos, backups you share, or other people's machines. Signing in on
   a machine registers a device on your Kimi account page; remove devices
@@ -182,6 +191,7 @@ Zero dependencies, ~700 lines, all in `src/`:
 | `src/tools.mjs` | the four tool schemas (same shapes as the official `kimi-datasource`) |
 | `src/oauth.mjs` | RFC 8628 device flow + refresh, matching the official clients |
 | `src/credentials.mjs` | permission-safe credential store + refresh de-duplication |
+| `src/store.mjs` | optional OS-keychain backend for the refresh token |
 | `src/api.mjs` | `POST {base}/tools`, `/search`, `/fetch` with one refresh-and-retry on 401 |
 | `src/identity.mjs` | truthful `X-Msh-*` device identity headers |
 

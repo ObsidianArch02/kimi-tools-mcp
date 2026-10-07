@@ -13,8 +13,10 @@ import {
   TokenStore,
   loadCredentials,
   saveCredentials,
+  storeBackend,
 } from "../src/credentials.mjs";
 import { ascii, buildDeviceHeaders, deviceId, deviceModel } from "../src/identity.mjs";
+import { keychainAvailable, keychainClear, keychainRead } from "../src/store.mjs";
 
 function makeTokenStore() {
   return {
@@ -187,4 +189,40 @@ test("json-rpc framing: parse error and unknown method are well-formed", async (
     server.handleRequest({ method: "no/such", id: 9 }),
     (error) => error.code === -32601,
   );
+});
+
+test("store backend defaults to file and opts into keychain explicitly", () => {
+  assert.equal(storeBackend({}), "file");
+  assert.equal(storeBackend({ KIMI_TOOLS_STORE: "file" }), "file");
+  assert.equal(storeBackend({ KIMI_TOOLS_STORE: "keychain" }), "keychain");
+  assert.equal(storeBackend({ KIMI_TOOLS_STORE: "KEYCHAIN" }), "keychain");
+  assert.equal(storeBackend({ KIMI_TOOLS_STORE: "bogus" }), "file");
+});
+
+test("keychain backend keeps the refresh token out of credentials.json", (t) => {
+  if (process.platform !== "darwin" || !keychainAvailable()) {
+    t.skip("OS keychain is not available in this environment");
+    return;
+  }
+  const dir = mkdtempSync(join(tmpdir(), "kimi-tools-test-"));
+  const env = { KIMI_TOOLS_STORE: "keychain" };
+  try {
+    saveCredentials(dir, {
+      version: 1,
+      region: "cn",
+      access_token: "short-lived",
+      refresh_token: "long-lived-secret",
+      expires_at: 1_900_000_000,
+    }, env);
+    const onDisk = JSON.parse(readFileSync(join(dir, "credentials.json"), "utf8"));
+    assert.equal(onDisk.refresh_token, "keychain:refresh-token");
+    assert.ok(!JSON.stringify(onDisk).includes("long-lived-secret"));
+    // Reads reassemble the full credential from file + keychain.
+    const loaded = loadCredentials(dir);
+    assert.equal(loaded.refresh_token, keychainRead());
+    assert.equal(loaded.access_token, "short-lived");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+    keychainClear();
+  }
 });

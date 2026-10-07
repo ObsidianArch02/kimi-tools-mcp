@@ -24,6 +24,18 @@ import { join } from "node:path";
 import { DEFAULT_REGION, REFRESH_SKEW_MS, REGIONS } from "./constants.mjs";
 import { buildDeviceHeaders } from "./identity.mjs";
 import { OAuthUnauthorizedError, refreshAccessToken } from "./oauth.mjs";
+import { keychainClear, keychainRead, keychainWrite } from "./store.mjs";
+
+// Credential backends. The default is the permission-locked file described
+// above; KIMI_TOOLS_STORE=keychain moves the long-lived refresh token into
+// the OS keychain (see store.mjs) while the short-lived access token and
+// non-secret metadata stay in credentials.json under the key
+// "keychain:refresh-token".
+export function storeBackend(env = process.env) {
+  return env.KIMI_TOOLS_STORE?.trim().toLowerCase() === "keychain" ? "keychain" : "file";
+}
+
+const KEYCHAIN_PLACEHOLDER = "keychain:refresh-token";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -83,31 +95,41 @@ function credentialsPath(homeDir) {
 export function loadCredentials(homeDir) {
   try {
     const parsed = JSON.parse(readFileSync(credentialsPath(homeDir), "utf8"));
-    if (parsed && typeof parsed === "object" && typeof parsed.refresh_token === "string") {
-      return parsed;
+    if (!parsed || typeof parsed !== "object" || typeof parsed.refresh_token !== "string") return null;
+    if (parsed.refresh_token === KEYCHAIN_PLACEHOLDER) {
+      const secret = keychainRead();
+      if (secret === null) return null;
+      return { ...parsed, refresh_token: secret };
     }
+    return parsed;
   } catch {}
   return null;
 }
 
-export function saveCredentials(homeDir, credentials) {
+export function saveCredentials(homeDir, credentials, env = process.env) {
   mkdirSync(homeDir, { recursive: true, mode: 0o700 });
   try {
     chmodSync(homeDir, 0o700);
   } catch {}
+  let stored = credentials;
+  if (storeBackend(env) === "keychain") {
+    keychainWrite(credentials.refresh_token);
+    stored = { ...credentials, refresh_token: KEYCHAIN_PLACEHOLDER };
+  }
   const path = credentialsPath(homeDir);
   const tmp = `${path}.tmp-${process.pid}`;
-  writeFileSync(tmp, `${JSON.stringify(credentials, null, 2)}\n`, { encoding: "utf8", mode: 0o600 });
+  writeFileSync(tmp, `${JSON.stringify(stored, null, 2)}\n`, { encoding: "utf8", mode: 0o600 });
   renameSync(tmp, path);
   try {
     chmodSync(path, 0o600);
   } catch {}
 }
 
-export function clearCredentials(homeDir) {
+export function clearCredentials(homeDir, env = process.env) {
   try {
     writeFileSync(credentialsPath(homeDir), "{}\n", { encoding: "utf8", mode: 0o600 });
   } catch {}
+  if (storeBackend(env) === "keychain") keychainClear();
 }
 
 export function regionOf(credentials, env = process.env) {
