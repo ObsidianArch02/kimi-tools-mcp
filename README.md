@@ -14,6 +14,11 @@ endpoints the official Kimi Code clients use (`POST /coding/v1/search`,
 the same public OAuth client id that identifies the Kimi Code product
 family. It is not affiliated with Moonshot AI.
 
+> **Requires a paid Kimi membership.** These tools are paid subscription
+> features: every call is served by — and counted against — the signed-in
+> user's own Kimi Code membership (Plus / Moderato or above). There is no
+> free tier here; you must sign in with your own paid account.
+
 ## What it gives your agent
 
 | Tool | What it does |
@@ -32,8 +37,11 @@ The data-source catalog behind the last two tools includes:
 ## Requirements
 
 - Node.js ≥ 18.17 (no dependencies; `npx` runs it directly).
-- A **Kimi membership that includes Kimi Code** (Plus / Moderato or above).
-  The tools only work after *you* sign in with *your own* account.
+- A **paid Kimi membership that includes Kimi Code** (Plus / Moderato or
+  above). These are paid subscription features of your own account: every
+  tool call is served by — and counted against — your membership's quota,
+  so the tools only work after *you* sign in with *your own* account.
+  Free-tier accounts and other people's credentials won't work.
 
 ## Sign in (once per machine)
 
