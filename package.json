@@ -11,8 +11,15 @@
     "bin",
     "src",
     "README.md",
+    "README.zh-CN.md",
     "LICENSE"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ObsidianArch02/kimi-tools-mcp.git"
+  },
+  "bugs": "https://github.com/ObsidianArch02/kimi-tools-mcp/issues",
+  "homepage": "https://github.com/ObsidianArch02/kimi-tools-mcp#readme",
   "engines": {
     "node": ">=18.17"
   },
