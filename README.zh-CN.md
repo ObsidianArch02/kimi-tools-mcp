@@ -94,23 +94,6 @@ claude mcp add kimi-tools -- npx -y kimi-tools-mcp
 
 然后在终端执行一次 `npx -y kimi-tools-mcp login`。
 
-### <img src="https://www.kimi.com/favicon.ico" width="16" height="16" alt="" valign="middle"> Kimi Code CLI
-
-写入 `~/.kimi-code/mcp.json`（文件不存在则新建）：
-
-```json
-{
-  "mcpServers": {
-    "kimi-tools": {
-      "command": "npx",
-      "args": ["-y", "kimi-tools-mcp"]
-    }
-  }
-}
-```
-
-然后执行一次 `npx -y kimi-tools-mcp login`。
-
 ### <img src="https://opencode.ai/favicon.ico" width="16" height="16" alt="" valign="middle"> OpenCode
 
 写入 `~/.config/opencode/opencode.json`（或项目内

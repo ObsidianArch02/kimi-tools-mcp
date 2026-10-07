@@ -93,23 +93,6 @@ claude mcp add kimi-tools -- npx -y kimi-tools-mcp
 
 then run `npx -y kimi-tools-mcp login` once in a terminal.
 
-### <img src="https://www.kimi.com/favicon.ico" width="16" height="16" alt="" valign="middle"> Kimi Code CLI
-
-Add to `~/.kimi-code/mcp.json` (create the file if needed):
-
-```json
-{
-  "mcpServers": {
-    "kimi-tools": {
-      "command": "npx",
-      "args": ["-y", "kimi-tools-mcp"]
-    }
-  }
-}
-```
-
-then run `npx -y kimi-tools-mcp login` once.
-
 ### <img src="https://opencode.ai/favicon.ico" width="16" height="16" alt="" valign="middle"> OpenCode
 
 Add to `~/.config/opencode/opencode.json` (or `.opencode/opencode.json`):
