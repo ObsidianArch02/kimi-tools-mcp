@@ -38,7 +38,7 @@ jobs:
         with:
           node-version: 22
 
-      - run: node --test test/
+      - run: npm test
 
       - name: Tag must match package.json version
         run: |
@@ -78,5 +78,9 @@ jobs:
         with:
           node-version: 22
           registry-url: "https://registry.npmjs.org"
+
+      # npm trusted publishing requires npm >= 11.5.1. Pin the major
+      # explicitly so a runner image update cannot silently change auth.
+      - run: npm install --global npm@12.2.0
 
       - run: npm publish --access public --provenance
