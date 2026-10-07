@@ -1,5 +1,7 @@
 # kimi-tools-mcp
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 Use Kimi Code's **official managed tools** — web search, URL fetch, and the
 25+ professional data sources behind Kimi's `kimi-datasource` (Wind, SEC
 EDGAR, S&P Capital IQ, World Bank, IMF, FRED, Tianyancha, arXiv, Google
@@ -51,7 +53,7 @@ npx -y kimi-tools-mcp login --region global   # use auth.kimi.ai instead of auth
 
 ## Add it to your agent
 
-### magpie
+### <img src="https://usemagpie.ai/favicon.png" width="16" height="16" alt="" valign="middle"> magpie
 
 ```bash
 magpie library mcp add kimi-tools -- npx -y kimi-tools-mcp
@@ -62,7 +64,7 @@ Then sign in once with `npx -y kimi-tools-mcp login`. Every agent you gave
 the server to (magpie's Library page or `agents=...` selects them) can call
 the tools, sharing your sign-in — agents never see your tokens.
 
-### Codex (OpenAI)
+### <img src="https://avatars.githubusercontent.com/u/14957082?s=32" width="16" height="16" alt="" valign="middle"> Codex (OpenAI)
 
 ```bash
 codex mcp add kimi-tools -- npx -y kimi-tools-mcp
@@ -73,14 +75,14 @@ codex mcp login kimi-tools        # opens the browser device flow
 the same device flow as `npx kimi-tools-mcp login`. Either command works —
 they share the same credential store.)
 
-### pi
+### <img src="https://avatars.githubusercontent.com/u/207902832?s=32" width="16" height="16" alt="" valign="middle"> pi
 
 ```bash
 pi mcp add kimi-tools -- npx -y kimi-tools-mcp
 pi mcp login kimi-tools
 ```
 
-### Claude Code
+### <img src="https://claude.ai/favicon.ico" width="16" height="16" alt="" valign="middle"> Claude Code
 
 ```bash
 claude mcp add kimi-tools -- npx -y kimi-tools-mcp
@@ -88,13 +90,13 @@ claude mcp add kimi-tools -- npx -y kimi-tools-mcp
 
 then run `npx -y kimi-tools-mcp login` once in a terminal.
 
-### Kimi Code CLI
+### <img src="https://www.kimi.com/favicon.ico" width="16" height="16" alt="" valign="middle"> Kimi Code CLI
 
 ```bash
 kimi mcp add kimi-tools -- npx -y kimi-tools-mcp
 ```
 
-### OpenCode
+### <img src="https://opencode.ai/favicon.ico" width="16" height="16" alt="" valign="middle"> OpenCode
 
 Add to `~/.config/opencode/opencode.json` (or `.opencode/opencode.json`):
 
@@ -110,7 +112,7 @@ Add to `~/.config/opencode/opencode.json` (or `.opencode/opencode.json`):
 }
 ```
 
-### Cursor / VS Code / any other MCP host
+### <img src="https://cursor.com/favicon.ico" width="16" height="16" alt="" valign="middle"> Cursor · <img src="https://code.visualstudio.com/favicon.ico" width="16" height="16" alt="" valign="middle"> VS Code · any other MCP host
 
 Register a stdio MCP server whose command is `npx` with arguments
 `["-y", "kimi-tools-mcp"]`, then run `npx -y kimi-tools-mcp login` once.
